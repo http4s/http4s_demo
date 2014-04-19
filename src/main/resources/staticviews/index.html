@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en" ng-app="phonecatApp">
+<head>
+    <meta charset="utf-8">
+    <title>http4s Example</title>
+    <link rel="stylesheet" href="static/css/app.css">
+    <link rel="stylesheet" href="static/css/bootstrap.css">
+
+    <script src="static/js/angular.js"></script>
+    <script src="static/js/angular-route.js"></script>
+    <script src="static/js/angular-resource.js"></script>
+
+    <script src="static/js/app.js"></script>
+    <script src="static/js/controllers.js"></script>
+    <script src="static/js/services.js"></script>
+</head>
+<body>
+<div class="page-header row-fluid">
+    <div class="span8"><h1> http4s/blaze <small>AngularJS demo app</small></h1></div>
+</div>
+
+<div class="span2">
+    <ul class="nav nav-list">
+        <li ng-class="navClass('home')"><a href="#Home">Home</a></li>
+        <li ng-class="navClass('phones')"><a href="#/phones">Phone List</a></li>
+        <li ng-class="navClass('xhr')"><a href="#/xhr">XHR Example</a></li>
+        <li ng-class="navClass('websocket')"><a href="#/websocket">WebSockets</a></li>
+        <li ng-class="navClass('wschat')"><a href="#/wschat">WebSocket Chat</a></li>
+    </ul>
+</div>
+<div class="span10" ng-view></div>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+<div class="span12">
+    <div ng-show="needJoin"><!-- The join form. These could probably be handled by templates -->
+        <p><h3>Join the Chat</h3></p>
+        <form name="messageinput">
+            Name: <input type="text" name="input" ng-model="chatName"
+                                ng-pattern="word" required ng-trim="false">
+            <button class="btn btn-success" ng-click="join()">Join</button>
+        </form>
+
+    </div>
+    <div ng-show="!needJoin" class="span8"><!-- The chat form -->
+        <h3>Incoming Messages</h3>
+        <hr>
+        <div class="table">
+            <p ng-repeat="data in messages"><b>{{data.time}}:</b> {{data.msg}}</p>
+        </div>
+        <hr>
+        <form name="messageinput">
+            <input type="text" name="input" ng-model="outmsg" required ng-trim="false" placeholder="Send Message">
+            <button class="btn btn-success" ng-click="send()">Send</button>
+        </form>
+    </div>
+</div>

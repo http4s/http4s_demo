@@ -1,0 +1,13 @@
+<div class="span12">
+    <div ng-show="active">
+        <p><h3>Click the Button to Begin the WebSocket Connection</h3></p>
+        <button class="btn btn-success" ng-click="begin()"> {{buttonmsg}}</button>
+    </div>
+    <div class="span5">
+        <table class="table table-striped">
+            <tr ng-repeat="data in wsout">
+                <td><h5>{{data}}</h5></td>
+            </tr>
+        </table>
+    </div>
+</div>

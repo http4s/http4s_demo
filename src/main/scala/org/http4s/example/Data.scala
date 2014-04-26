@@ -6,7 +6,8 @@ package org.http4s.example
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import org.http4s.{CharacterSet, BodyChunk, MediaType, SimpleWritable}
+import scodec.bits.ByteVector
+import org.http4s.{CharacterSet, MediaType, SimpleWritable}
 import org.http4s.Header.`Content-Type`
 
 object Data {
@@ -37,8 +38,8 @@ object Data {
   implicit def jsonWritable = new SimpleWritable[JValue] {
     override def contentType: `Content-Type` = `Content-Type`(MediaType.`application/json`)
 
-    override def asChunk(data: _root_.org.json4s.JValue): BodyChunk =
-      BodyChunk(compact(render(data)).getBytes(CharacterSet.`UTF-8`.charset))
+    override def asChunk(data: _root_.org.json4s.JValue): ByteVector =
+      ByteVector.view(compact(render(data)).getBytes(CharacterSet.`UTF-8`.charset))
   }
 
 }

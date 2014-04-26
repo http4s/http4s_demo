@@ -6,7 +6,7 @@ import scalaz.concurrent.Task
 import scalaz.stream.Process
 import org.http4s.Header.{`If-Modified-Since`, `Last-Modified`, `Content-Type`}
 import scalaz.stream.io.chunkR
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.StrictLogging
 
 import org.http4s.Http4s._
 import org.joda.time.DateTime
@@ -14,7 +14,7 @@ import org.joda.time.DateTime
 /**
  * Created by Bryce Anderson on 4/12/14.
  */
-class ResourceCache extends Logging {
+class ResourceCache extends StrictLogging {
 
   private val startDate = new DateTime().millisOfSecond().setCopy(0)
 

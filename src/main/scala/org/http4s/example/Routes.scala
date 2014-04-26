@@ -8,12 +8,8 @@ import scala.concurrent.duration._
 
 import scalaz.concurrent.Task
 import scalaz.stream.Process
-import scalaz.stream.Process.Sink
 import scalaz.stream.async.topic
-import org.http4s.Header.`Content-Type`
-import java.util.regex.Pattern
-import java.util.concurrent.Executors
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.LazyLogging
 
 import org.http4s.websocket._
 
@@ -21,7 +17,7 @@ import org.http4s.websocket._
 /**
  * Created by Bryce Anderson on 3/23/14.
  */
-class Routes  extends Logging {
+class Routes  extends LazyLogging {
 
   import Data.jsonWritable
   import org.http4s.ResponseSyntax._

@@ -3,12 +3,12 @@ package org.http4s.example
 import org.http4s.blaze._
 import org.http4s.blaze.pipeline.LeafBuilder
 import org.http4s.blaze.channel.nio1.SocketServerChannelFactory
-import org.http4s.blaze.channel.nio2.NIO2ServerChannelFactory
 import org.http4s.blaze.websocket.WebSocketSupport
 
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
-import com.typesafe.scalalogging.slf4j.Logging
+import com.typesafe.scalalogging.slf4j.StrictLogging
+import org.http4s.blaze.channel.nio2.NIO2ServerChannelFactory
 
 
 /**
@@ -23,12 +23,15 @@ class ExampleApp(addr: InetSocketAddress) {
   //private val factory = new NIO2ServerChannelFactory(f)
   private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
 
-  def f() = LeafBuilder(new Http1Stage(route.service)(pool) with WebSocketSupport)
+  def f() = {
+    val s = new Http1Stage(route.service)(pool) with WebSocketSupport
+    LeafBuilder(s)
+  }
 
   def run(): Unit = factory.bind(addr).run()
 }
 
-object ExampleApp extends Logging {
+object ExampleApp extends StrictLogging {
   val ip = Option(System.getenv("OPENSHIFT_DIY_IP")).getOrElse("0.0.0.0")
   val port = (Option(System.getenv("OPENSHIFT_DIY_PORT")) orElse
               Option(System.getenv("HTTP_PORT")))

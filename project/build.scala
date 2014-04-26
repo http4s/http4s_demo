@@ -24,18 +24,18 @@ object MyBuild extends Build {
   lazy val myProject = Project(
     id = "my-project",
     base = file("."),
-    settings = buildSettings ++ Seq()
+    settings = buildSettings ++ Seq(version := Dependencies.http4sVersion)
   )
 
 
   object Dependencies {
 
-    val version = "0.2.0-SNAPSHOT"
+    val http4sVersion = "0.2.0-SNAPSHOT"
 
-    lazy val http4sCore  = "org.http4s" %% "http4s-core"  % version
-    lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"   % version
-    lazy val http4sBlaze = "org.http4s" %% "http4s-blaze" % version
-    lazy val http4sJetty = "org.http4s" %% "http4s-servlet" % version
+    lazy val http4sCore  = "org.http4s" %% "http4s-core"    % http4sVersion
+    lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"     % http4sVersion
+    lazy val http4sBlaze = "org.http4s" %% "http4s-blaze"   % http4sVersion
+    lazy val http4sJetty = "org.http4s" %% "http4s-servlet" % http4sVersion
 
 //    lazy val jettyDeps = Seq(http4sJetty, javaxServletApi, jettyServer, jettyServlet)
 //

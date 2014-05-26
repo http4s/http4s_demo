@@ -20,7 +20,7 @@ import org.http4s.websocket._
 class Routes  extends LazyLogging {
 
   import Data.jsonWritable
-  import org.http4s.ResponseSyntax._
+  import org.http4s.MessageSyntax._
 
   val cache = new ResourceCache
 

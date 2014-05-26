@@ -2,29 +2,47 @@ package org.http4s.example
 
 import org.http4s.blaze._
 import org.http4s.blaze.pipeline.LeafBuilder
-import org.http4s.blaze.channel.nio1.SocketServerChannelFactory
 import org.http4s.blaze.websocket.WebSocketSupport
+import org.http4s.blaze.channel.nio2.NIO2ServerChannelFactory
+import org.http4s.blaze.channel.nio1.SocketServerChannelFactory
 
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 import com.typesafe.scalalogging.slf4j.StrictLogging
-import org.http4s.blaze.channel.nio2.NIO2ServerChannelFactory
+import java.nio.channels.AsynchronousSocketChannel
+import org.http4s.{HttpService, Status, Request}
+import org.http4s.blaze.channel.SocketConnection
 
 
 /**
  * Created by Bryce Anderson on 3/23/14.
  */
 
-class ExampleApp(addr: InetSocketAddress) {
+class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
 
-  private val route = new Routes
   private val pool = Executors.newCachedThreadPool()
 
-  //private val factory = new NIO2ServerChannelFactory(f)
-  private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
+  val routes = new Routes().service
 
-  def f() = {
-    val s = new Http1Stage(route.service)(pool) with WebSocketSupport
+  val service: HttpService =  { case req: Request =>
+    val uri = req.requestUri.path
+    if (uri.endsWith("html")) {
+      logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.requestMethod}: ${req.requestUri.path}")
+    }
+
+    routes.applyOrElse(req, {_: Request => Status.NotFound(req)})
+  }
+
+  private val factory = new NIO2ServerChannelFactory(f) {
+    override protected def acceptConnection(channel: AsynchronousSocketChannel): Boolean = {
+      logger.info(s"New connection: ${channel.getRemoteAddress}")
+      super.acceptConnection(channel)
+    }
+  }
+  //private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
+
+  def f(conn: SocketConnection) = {
+    val s = new Http1Stage(service, Some(conn))(pool) with WebSocketSupport
     LeafBuilder(s)
   }
 

@@ -26,20 +26,19 @@ class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
 
   val service: HttpService =  { case req: Request =>
     val uri = req.requestUri.path
-    if (uri.endsWith("html")) {
-      logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.requestMethod}: ${req.requestUri.path}")
-    }
+    logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.requestMethod}: ${req.requestUri.path}")
 
-    routes.applyOrElse(req, {_: Request => Status.NotFound(req)})
+    val resp = routes.applyOrElse(req, {_: Request => Status.NotFound(req)})
+    resp
   }
 
-  private val factory = new NIO2ServerChannelFactory(f) {
-    override protected def acceptConnection(channel: AsynchronousSocketChannel): Boolean = {
-      logger.info(s"New connection: ${channel.getRemoteAddress}")
-      super.acceptConnection(channel)
-    }
-  }
-  //private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
+//  private val factory = new NIO2ServerChannelFactory(f) {
+//    override protected def acceptConnection(channel: AsynchronousSocketChannel): Boolean = {
+//      logger.info(s"New connection: ${channel.getRemoteAddress}")
+//      super.acceptConnection(channel)
+//    }
+//  }
+  private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
 
   def f(conn: SocketConnection) = {
     val s = new Http1Stage(service, Some(conn))(pool) with WebSocketSupport

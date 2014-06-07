@@ -1,6 +1,10 @@
 <div class="span12">
     <div ng-show="needJoin"><!-- The join form. These could probably be handled by templates -->
-        <p><h3>Join the Chat</h3></p>
+        <p>
+            <h3>Join the Chat</h3><br/>
+            <i>If nobody is here to chat with, try opening two browsers!</i>
+        </p>
+
         <form name="messageinput">
             Name: <input type="text" name="input" ng-model="chatName"
                                 ng-pattern="word" required ng-trim="false">

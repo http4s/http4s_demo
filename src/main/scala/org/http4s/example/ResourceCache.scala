@@ -74,7 +74,7 @@ class ResourceCache extends StrictLogging {
     // If the client suggests they may already have a fresh version, send NotModified
     req.headers.get(`If-Modified-Since`).flatMap { h =>
       val expired = h.date.compareTo(startDate) < 0
-      logger.trace(s"Expired: ${expired}. Request age: ${h.date}, Modified: $startDate")
+      logger.info(s"${req.requestUri}: Expired: ${expired}. Request age: ${h.date}, Modified: $startDate")
 
       if (expired) None
       else Some(NotModified())

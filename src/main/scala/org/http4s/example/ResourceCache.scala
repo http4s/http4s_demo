@@ -8,15 +8,15 @@ import org.http4s.Header.{`If-Modified-Since`, `Last-Modified`, `Content-Type`}
 import scalaz.stream.io.chunkR
 import com.typesafe.scalalogging.slf4j.StrictLogging
 
+import org.http4s.DateTime
 import org.http4s.Http4s._
-import org.joda.time.DateTime
 
 /**
  * Created by Bryce Anderson on 4/12/14.
  */
 class ResourceCache extends StrictLogging {
 
-  private val startDate = new DateTime().millisOfSecond().setCopy(0)
+  private val startDate = DateTime.now
 
   private val cacheMap = new mutable.HashMap[String, Array[Byte]]()
 

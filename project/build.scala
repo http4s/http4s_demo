@@ -10,7 +10,7 @@ object MyBuild extends Build {
      Revolver.settings ++ 
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.10.4",
+        scalaVersion := "2.11.1",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
@@ -43,7 +43,7 @@ object MyBuild extends Build {
 //    lazy val jettyServer         = "org.eclipse.jetty"         % "jetty-server"            % "9.1.0.v20131115"
 //    lazy val jettyServlet        = "org.eclipse.jetty"         % "jetty-servlet"           % jettyServer.revision
 
-    val json4sNative = "org.json4s" %% "json4s-native" % "3.2.7"
+    val json4sNative = "org.json4s" %% "json4s-native" % "3.2.10"
   }
   
 }

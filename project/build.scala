@@ -10,7 +10,7 @@ object MyBuild extends Build {
      Revolver.settings ++ 
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.10.4",
+        scalaVersion := "2.11.1",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(

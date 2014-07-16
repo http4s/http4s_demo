@@ -11,9 +11,6 @@ import com.typesafe.scalalogging.slf4j.StrictLogging
 import org.http4s.DateTime
 import org.http4s.Http4s._
 
-/**
- * Created by Bryce Anderson on 4/12/14.
- */
 class ResourceCache extends StrictLogging {
 
   private val startDate = DateTime.now

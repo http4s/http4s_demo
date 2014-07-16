@@ -1,43 +1,39 @@
 package org.http4s.example
 
 import org.http4s.dsl._
-import org.http4s._
+import org.http4s.server.HttpService
 import org.http4s.Status.{NotFound, Ok}
+import org.http4s.server.websocket._
 
 import scala.concurrent.duration._
 
 import scalaz.concurrent.Task
 import scalaz.stream.Process
 import scalaz.stream.async.topic
+
 import com.typesafe.scalalogging.slf4j.LazyLogging
 
-import org.http4s.websocket._
-
-
-/**
- * Created by Bryce Anderson on 3/23/14.
- */
 class Routes  extends LazyLogging {
 
   import Data.jsonWritable
-  import org.http4s.MessageSyntax._
 
   val cache = new ResourceCache
 
+  // Provides the message board for our websocket chat
   val chatTopic = topic[String]()
 
   val service: HttpService = {
-    case Get -> Root / "hello" => Ok("Hello world!")
+    case GET -> Root / "hello" => Ok("Hello world!")
 
-    case Get -> Root / "things" / rest => Ok(s"Calculating the rest: $rest")
+    case GET -> Root / "things" / rest => Ok(s"Calculating the rest: $rest")
 
-    case Get -> Root / "data" / id =>
+    case GET -> Root / "data" / id =>
       val data = if (id == "all") Data.getPhones()
                  else Data.getPhonesMatching(id)
       Ok(data)
 
     /** Scalaz-stream makes it simple to compose routes, and cleanup resources */
-    case Get -> Root / "cleanup" =>
+    case GET -> Root / "cleanup" =>
       val d = Process.constant("foo ")
           .take(40)
           .onComplete(Process.await(Task{logger.info("Finished!")})(_ => Process.halt))
@@ -46,13 +42,13 @@ class Routes  extends LazyLogging {
 
     /** Working with websockets is simple with http4s */
 
-    case r @ Get -> Root / "websocket" =>
+    case r @ GET -> Root / "websocket" =>
       // Send a ping every second
       val src = Process.awakeEvery(1.seconds).map(d => Text("Delay -> " + d))
 
       WS(src)
 
-    case r @ Get -> Root / "wschat" / name =>
+    case r @ GET -> Root / "wschat" / name =>
 
       def frameToMsg(f: WSFrame) = f match {
         case Text(msg) => s"$name says: $msg"
@@ -74,7 +70,7 @@ class Routes  extends LazyLogging {
 
     case r if r.pathInfo.startsWith("/static") => cache.getResource("", r.pathInfo, r)
 
-    case r @ Get -> Root / path => cache.getResource("/staticviews", if(path.contains('.')) path else path + ".html", r)
+    case r @ GET -> Root / path => cache.getResource("/staticviews", if(path.contains('.')) path else path + ".html", r)
 
     case r if r.pathInfo.endsWith("/") => service(r.withPathInfo(r.pathInfo + "index.html"))
 

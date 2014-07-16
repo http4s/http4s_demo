@@ -3,20 +3,15 @@ package org.http4s.example
 import org.http4s.blaze._
 import org.http4s.blaze.pipeline.LeafBuilder
 import org.http4s.blaze.websocket.WebSocketSupport
-import org.http4s.blaze.channel.nio2.NIO2ServerChannelFactory
 import org.http4s.blaze.channel.nio1.SocketServerChannelFactory
 
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 import com.typesafe.scalalogging.slf4j.StrictLogging
-import java.nio.channels.AsynchronousSocketChannel
-import org.http4s.{HttpService, Status, Request}
+import org.http4s.{Status, Request}
+import org.http4s.server.HttpService
 import org.http4s.blaze.channel.SocketConnection
 
-
-/**
- * Created by Bryce Anderson on 3/23/14.
- */
 
 class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
 
@@ -32,12 +27,6 @@ class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
     resp
   }
 
-//  private val factory = new NIO2ServerChannelFactory(f) {
-//    override protected def acceptConnection(channel: AsynchronousSocketChannel): Boolean = {
-//      logger.info(s"New connection: ${channel.getRemoteAddress}")
-//      super.acceptConnection(channel)
-//    }
-//  }
   private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
 
   def f(conn: SocketConnection) = {
@@ -56,7 +45,6 @@ object ExampleApp extends StrictLogging {
           .getOrElse(8080)
 
   logger.info(s"Starting Http4s-blaze example on '$ip:$port'")
-  println(s"Starting Http4s-blaze example on '$ip:$port'")
 
   def main(args: Array[String]): Unit = new ExampleApp(new InetSocketAddress(ip, port)).run()
 }

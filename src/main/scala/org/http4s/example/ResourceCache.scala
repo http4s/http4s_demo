@@ -9,7 +9,7 @@ import scalaz.stream.io.chunkR
 import com.typesafe.scalalogging.slf4j.StrictLogging
 
 import org.http4s.DateTime
-import org.http4s.Http4s._
+import org.http4s.dsl._
 
 class ResourceCache extends StrictLogging {
 
@@ -32,6 +32,7 @@ class ResourceCache extends StrictLogging {
 
     rs.map { p =>
       val bytes = Process.constant(8*1024)
+        .toSource
         .through(chunkR(p))
         .runLog
         .run
@@ -70,14 +71,14 @@ class ResourceCache extends StrictLogging {
   def getResource(dir: String, name: String, req: Request): Task[Response] =  {
     // If the client suggests they may already have a fresh version, send NotModified
     req.headers.get(`If-Modified-Since`).flatMap { h =>
-      val expired = h.date.compareTo(startDate) < 0
-      logger.info(s"${req.requestUri}: Expired: ${expired}. Request age: ${h.date}, Modified: $startDate")
+      val expired = h.date.compare(startDate) < 0
+      logger.info(s"${req.uri}: Expired: ${expired}. Request age: ${h.date}, Modified: $startDate")
 
       if (expired) None
       else Some(NotModified())
     }.getOrElse {
       _getResource(dir, name)
-        .addHeaders(`Last-Modified`(startDate))
+        .putHeaders(`Last-Modified`(startDate))
     }
   }
 

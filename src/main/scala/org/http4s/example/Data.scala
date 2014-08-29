@@ -1,10 +1,16 @@
 package org.http4s.example
 
+import java.nio.charset.StandardCharsets
+
+import org.http4s.Writable.Entity
 import org.json4s._
 import org.json4s.native.JsonMethods._
 import scodec.bits.ByteVector
-import org.http4s.{CharacterSet, MediaType, SimpleWritable}
+import org.http4s.{Headers, MediaType, Writable}
 import org.http4s.Header.`Content-Type`
+
+import scalaz.concurrent.Task
+import scalaz.stream.Process.emit
 
 object Data {
 
@@ -31,11 +37,9 @@ object Data {
     * In the future, macro Writables will make make it simple to turn
     * case classes into a form encoded body or json, etc.
     */
-  implicit def jsonWritable = new SimpleWritable[JValue] {
-    override def contentType: `Content-Type` = `Content-Type`(MediaType.`application/json`)
-
-    override def asChunk(data: _root_.org.json4s.JValue): ByteVector =
-      ByteVector.view(compact(render(data)).getBytes(CharacterSet.`UTF-8`.charset))
-  }
+  implicit val jsonWritable = new Writable[JValue]( jv => {
+    val bv = ByteVector.view(compact(render(jv)).getBytes(StandardCharsets.UTF_8))
+    Task.now(Entity(emit(bv), Some(bv.length)))
+  }, Headers(`Content-Type`(MediaType.`application/json`)))
 
 }

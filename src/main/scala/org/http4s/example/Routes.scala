@@ -1,9 +1,12 @@
 package org.http4s.example
 
+
+import java.util.concurrent.Executors
+
 import org.http4s.dsl._
 import org.http4s.server.HttpService
-import org.http4s.Status.{NotFound, Ok}
-import org.http4s.server.websocket._
+import org.http4s.websocket._
+import org.http4s.server.websocket.WS
 
 import scala.concurrent.duration._
 
@@ -18,6 +21,7 @@ class Routes  extends LazyLogging {
   import Data.jsonWritable
 
   val cache = new ResourceCache
+  implicit val scheduledEC = Executors.newScheduledThreadPool(1)
 
   // Provides the message board for our websocket chat
   val chatTopic = topic[String]()

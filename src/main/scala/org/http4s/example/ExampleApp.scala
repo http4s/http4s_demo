@@ -1,16 +1,17 @@
 package org.http4s.example
 
-import org.http4s.blaze._
 import org.http4s.blaze.pipeline.LeafBuilder
-import org.http4s.blaze.websocket.WebSocketSupport
+import org.http4s.server.blaze.{Http1ServerStage, WebSocketSupport}
 import org.http4s.blaze.channel.nio1.SocketServerChannelFactory
 
 import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 import com.typesafe.scalalogging.slf4j.StrictLogging
-import org.http4s.{Status, Request}
+import org.http4s.Request
 import org.http4s.server.HttpService
 import org.http4s.blaze.channel.SocketConnection
+
+import org.http4s.dsl._
 
 
 class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
@@ -20,17 +21,17 @@ class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
   val routes = new Routes().service
 
   val service: HttpService =  { case req: Request =>
-    val uri = req.requestUri.path
-    logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.requestMethod}: ${req.requestUri.path}")
+    val path = req.uri.path
+    logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.method}: $path")
 
-    val resp = routes.applyOrElse(req, {_: Request => Status.NotFound(req)})
+    val resp = routes.applyOrElse(req, {_: Request => NotFound(req.uri.path)})
     resp
   }
 
   private val factory = new SocketServerChannelFactory(f, 4, 16*1024)
 
   def f(conn: SocketConnection) = {
-    val s = new Http1Stage(service, Some(conn))(pool) with WebSocketSupport
+    val s = new Http1ServerStage(service, Some(conn))(pool) with WebSocketSupport
     LeafBuilder(s)
   }
 

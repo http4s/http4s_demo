@@ -30,12 +30,12 @@ object MyBuild extends Build {
 
   object Dependencies {
 
-    val http4sVersion = "0.2.0"
+    val http4sVersion = "0.3.0"
 
-    lazy val http4sCore  = "org.http4s" %% "http4s-core"    % http4sVersion
-    lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"     % http4sVersion
-    lazy val http4sBlaze = "org.http4s" %% "http4s-blaze"   % http4sVersion
-    lazy val http4sJetty = "org.http4s" %% "http4s-servlet" % http4sVersion
+    lazy val http4sCore  = "org.http4s" %% "http4s-server"      % http4sVersion
+    lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"         % http4sVersion
+    lazy val http4sBlaze = "org.http4s" %% "http4s-blazeserver" % http4sVersion
+    lazy val http4sJetty = "org.http4s" %% "http4s-servlet"     % http4sVersion
 
 //    lazy val jettyDeps = Seq(http4sJetty, javaxServletApi, jettyServer, jettyServlet)
 //

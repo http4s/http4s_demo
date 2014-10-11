@@ -10,14 +10,15 @@ object MyBuild extends Build {
      Revolver.settings ++ 
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.11.1",
+        scalaVersion := "2.11.2",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
           json4sNative,
           http4sCore,
           http4sDSL,
-          http4sBlaze
+          http4sBlaze,
+          rhoSwagger
         ) //++ jettyDeps
     )
 
@@ -31,11 +32,14 @@ object MyBuild extends Build {
   object Dependencies {
 
     val http4sVersion = "0.3.0"
+    val rhoVersion = "0.1.0"
 
     lazy val http4sCore  = "org.http4s" %% "http4s-server"      % http4sVersion
     lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"         % http4sVersion
     lazy val http4sBlaze = "org.http4s" %% "http4s-blazeserver" % http4sVersion
     lazy val http4sJetty = "org.http4s" %% "http4s-servlet"     % http4sVersion
+
+    lazy val rhoSwagger  = "org.http4s" %% "rho-swagger"        % rhoVersion
 
 //    lazy val jettyDeps = Seq(http4sJetty, javaxServletApi, jettyServer, jettyServlet)
 //

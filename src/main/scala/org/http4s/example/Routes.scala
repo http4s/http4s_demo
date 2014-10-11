@@ -10,7 +10,6 @@ import org.http4s.server.websocket.WS
 
 import scala.concurrent.duration._
 
-import scalaz.concurrent.Task
 import scalaz.stream.Process
 import scalaz.stream.async.topic
 
@@ -18,31 +17,13 @@ import com.typesafe.scalalogging.slf4j.LazyLogging
 
 class Routes  extends LazyLogging {
 
-  import Data.jsonWritable
-
-  val cache = new ResourceCache
-  implicit val scheduledEC = Executors.newScheduledThreadPool(1)
+  private val cache = new ResourceCache
+  private implicit val scheduledEC = Executors.newScheduledThreadPool(1)
 
   // Provides the message board for our websocket chat
-  val chatTopic = topic[String]()
+  private val chatTopic = topic[String]()
 
   val service: HttpService = {
-    case GET -> Root / "hello" => Ok("Hello world!")
-
-    case GET -> Root / "things" / rest => Ok(s"Calculating the rest: $rest")
-
-    case GET -> Root / "data" / id =>
-      val data = if (id == "all") Data.getPhones()
-                 else Data.getPhonesMatching(id)
-      Ok(data)
-
-    /** Scalaz-stream makes it simple to compose routes, and cleanup resources */
-    case GET -> Root / "cleanup" =>
-      val d = Process.constant("foo ")
-          .take(40)
-          .onComplete(Process.await(Task{logger.info("Finished!")})(_ => Process.halt))
-
-      Ok(d)
 
     /** Working with websockets is simple with http4s */
 
@@ -77,8 +58,6 @@ class Routes  extends LazyLogging {
     case r @ GET -> Root / path => cache.getResource("/staticviews", if(path.contains('.')) path else path + ".html", r)
 
     case r if r.pathInfo.endsWith("/") => service(r.withPathInfo(r.pathInfo + "index.html"))
-
-    case r => NotFound("404 Not Found: " + r.pathInfo)
   }
 
 }

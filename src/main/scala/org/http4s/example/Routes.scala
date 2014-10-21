@@ -55,6 +55,8 @@ class Routes  extends LazyLogging {
 
     case r if r.pathInfo.startsWith("/static") => cache.getResource("", r.pathInfo, r)
 
+    case r if r.pathInfo.startsWith("/swagger") => cache.getResource("", r.pathInfo, r)
+
     case r @ GET -> Root / path => cache.getResource("/staticviews", if(path.contains('.')) path else path + ".html", r)
 
     case r if r.pathInfo.endsWith("/") => service(r.withPathInfo(r.pathInfo + "index.html"))

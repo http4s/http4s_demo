@@ -26,9 +26,15 @@
         <li ng-class="navClass('xhr')"><a href="#/xhr">XHR Example</a></li>
         <li ng-class="navClass('websocket')"><a href="#/websocket">WebSockets</a></li>
         <li ng-class="navClass('wschat')"><a href="#/wschat">WebSocket Chat</a></li>
+        <li><a id = "swaggerId" href="">ρ Api Docs</a></li>
     </ul>
 </div>
 <div class="span10" ng-view></div>
 </body>
 </html>
 
+<script>
+(function () {
+  document.getElementById('swaggerId').href = window.location.origin + '/swagger/index.html';
+ })();
+</script>

@@ -23,8 +23,7 @@ class ExampleApp(addr: InetSocketAddress) extends StrictLogging {
   private val pool = Executors.newCachedThreadPool()
 
   // build our routes
-  def rhoRoutes = new HeaderInjector(Header("Access-Control-Allow-Origin", "*"))
-                       .apply(new RhoRoutes())
+  def rhoRoutes = new RhoRoutes()
 
   // our routes can be combinations of any HttpService, regardless of where they come from
   val routes = rhoRoutes orElse new Routes().service

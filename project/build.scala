@@ -9,14 +9,15 @@ object MyBuild extends Build {
   lazy val buildSettings = Defaults.defaultSettings ++ Revolver.settings ++
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.11.2",
+        scalaVersion := "2.11.4",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
-          json4sNative,
           http4sDSL,
           http4sBlaze,
-          rhoSwagger
+          rhoSwagger,
+          http4s_jackson,
+          logbackClassic 
         )
     )
 
@@ -29,13 +30,15 @@ object MyBuild extends Build {
 
   object Dependencies {
 
-    val http4sVersion = "0.3.0"
-    val rhoVersion = "0.1.1"
+    val http4sVersion = "0.4.1"
+    val rhoVersion = "0.2.0"
 
-    lazy val rhoSwagger  = "org.http4s" %% "rho-swagger"        % rhoVersion
-    lazy val http4sDSL   = "org.http4s" %% "http4s-dsl"         % http4sVersion
-    lazy val http4sBlaze = "org.http4s" %% "http4s-blazeserver" % http4sVersion
-    val json4sNative = "org.json4s"     %% "json4s-native"      % "3.2.10"
+    lazy val rhoSwagger     = "org.http4s"     %% "rho-swagger"           % rhoVersion
+    lazy val http4sDSL      = "org.http4s"     %% "http4s-dsl"            % http4sVersion
+    lazy val http4sBlaze    = "org.http4s"     %% "http4s-blazeserver"    % http4sVersion
+    lazy val http4s_jackson = "org.http4s"     %% "http4s-json4s-jackson" % http4sVersion
+
+    lazy val logbackClassic = "ch.qos.logback" % "logback-classic"        % "1.1.2"
   }
   
 }

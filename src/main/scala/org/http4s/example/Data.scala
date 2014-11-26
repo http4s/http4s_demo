@@ -1,17 +1,9 @@
 package org.http4s.example
 
-import java.nio.charset.StandardCharsets
-
-import org.http4s.Writable.Entity
 import org.json4s._
-import org.json4s.native.JsonMethods._
-import scodec.bits.ByteVector
-import org.http4s.{Headers, MediaType, Writable}
-import org.http4s.Header.`Content-Type`
+import org.json4s.jackson.JsonMethods._
 
-import scalaz.concurrent.Task
-import scalaz.stream.Process.emit
-
+/** This is our "database" */
 object Data {
 
   // This of this as a very small and unchanging database...
@@ -32,14 +24,4 @@ object Data {
       case _ => false
     }
   }
-
-  /** You can make a Writable for any custom data type you want!
-    * In the future, macro Writables will make make it simple to turn
-    * case classes into a form encoded body or json, etc.
-    */
-  implicit val jsonWritable = new Writable[JValue]( jv => {
-    val bv = ByteVector.view(compact(render(jv)).getBytes(StandardCharsets.UTF_8))
-    Task.now(Entity(emit(bv), Some(bv.length)))
-  }, Headers(`Content-Type`(MediaType.`application/json`)))
-
 }

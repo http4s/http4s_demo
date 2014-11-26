@@ -1,7 +1,7 @@
 package org.http4s.example
 
 import org.http4s.rho._
-import org.http4s.rho.swagger.SwaggerSupport
+import org.http4s.rho.swagger._
 
 import scalaz.concurrent.Task
 import scalaz.stream.Process
@@ -10,26 +10,30 @@ import rl.UrlCodingUtils.urlDecode
 
 
 class RhoRoutes extends RhoService with SwaggerSupport {
-  import Data.jsonWritable
+  // This is needed for the routes that return json4s `JValues`
+  import org.http4s.json4s.jackson.Json4sJacksonSupport._
 
-  GET / "hello" |>> { () => Ok("Hello world!") }
+  "Just a friendly hello route" **
+    GET / "hello" |>> { () => Ok("Hello world!") }
 
-  GET / "things" / *  |>> { (rest: Seq[String]) =>
-    Ok(s"Calculating the rest: ${rest.map(urlDecode(_)).mkString("/")}")
-  }
+  "An XHR example that just echos a result" **
+    GET / "things" / *  |>> { (rest: Seq[String]) =>
+      Ok(s"Calculating the rest: ${rest.map(urlDecode(_)).mkString("/")}")
+    }
 
-  GET / "data" / 'id |>> { (id: String) =>
-    val data = if (id == "all") Data.getPhones()
-    else Data.getPhonesMatching(id)
-    Ok(data)
-  }
+  "Data fetching route for models of android phones" **
+    GET / "data" / 'id |>> { (id: String) =>
+      val data = if (id == "all") Data.getPhones()
+                 else Data.getPhonesMatching(id)
+      Ok(data)
+    }
 
-  /** Scalaz-stream makes it simple to compose routes, and cleanup resources */
-  GET / "cleanup" |>> { () =>
-    val stream = Process.constant("foo ")
-      .take(40)
-      .onComplete(Process.await(Task{logger.info("Finished!")})(_ => Process.halt))
+  "Scalaz-stream makes it simple to compose routes, and cleanup resources" **
+    GET / "cleanup" |>> { () =>
+      val stream = Process.constant("foo ")
+        .take(40)
+        .onComplete(Process.await(Task{logger.info("Finished!")})(_ => Process.halt))
 
-    Ok(stream)
-  }
+      Ok(stream)
+    }
 }

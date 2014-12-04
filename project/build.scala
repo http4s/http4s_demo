@@ -30,7 +30,7 @@ object MyBuild extends Build {
 
   object Dependencies {
 
-    val http4sVersion = "0.4.1"
+    val http4sVersion = "0.4.2"
     val rhoVersion = "0.2.0"
 
     lazy val rhoSwagger     = "org.http4s"     %% "rho-swagger"           % rhoVersion

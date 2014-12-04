@@ -29,10 +29,10 @@ class RhoRoutes extends RhoService with SwaggerSupport {
     }
 
   "Scalaz-stream makes it simple to compose routes, and cleanup resources" **
-    GET / "cleanup" |>> { () =>
+    GET / "cleanup" |>> {
       val stream = Process.constant("foo ")
         .take(40)
-        .onComplete(Process.await(Task{logger.info("Finished!")})(_ => Process.halt))
+        .onComplete(Process.eval_(Task{logger.info("Finished!")}))
 
       Ok(stream)
     }

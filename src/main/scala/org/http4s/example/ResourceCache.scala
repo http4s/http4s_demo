@@ -4,7 +4,7 @@ import scala.collection.mutable
 import org.http4s.{MediaType, Response, Request}
 import scalaz.concurrent.Task
 import scalaz.stream.Process
-import org.http4s.Header.{`If-Modified-Since`, `Last-Modified`, `Content-Type`}
+import org.http4s.headers.{`If-Modified-Since`, `Last-Modified`, `Content-Type`}
 import scalaz.stream.io.chunkR
 
 import org.log4s.getLogger

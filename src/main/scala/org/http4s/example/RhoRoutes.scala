@@ -1,17 +1,16 @@
 package org.http4s.example
 
+import org.http4s.json4s.jackson.jsonEncoder
 import org.http4s.rho._
 import org.http4s.rho.swagger._
+import org.http4s.util.UrlCodingUtils.urlDecode
 
 import scalaz.concurrent.Task
 import scalaz.stream.Process
 
-import rl.UrlCodingUtils.urlDecode
-
 
 class RhoRoutes extends RhoService with SwaggerSupport {
   // This is needed for the routes that return json4s `JValues`
-  import org.http4s.json4s.jackson.Json4sJacksonSupport._
 
   "Just a friendly hello route" **
     GET / "hello" |>> { () => Ok("Hello world!") }

@@ -15,13 +15,11 @@ import scala.util.Properties.envOrNone
 import org.log4s.getLogger
 
 
-
-
-class ExampleApp(addr: InetSocketAddress) {
+class ExampleApp(host: String, port: Int) {
   private val logger = getLogger
   private val pool = Executors.newCachedThreadPool()
 
-  logger.info(s"Starting Http4s-blaze example on '$addr'")
+  logger.info(s"Starting Http4s-blaze example on '$host:$port'")
 
   // build our routes
   def rhoRoutes = new RhoRoutes()
@@ -39,10 +37,19 @@ class ExampleApp(addr: InetSocketAddress) {
   def run(): Unit = {
     // Construct the blaze pipeline. We could use `import org.http4s.server.blaze.BlazeServer`
     // which is much cleaner, except that we need to include websocket support.
+    // Typical server construction:
+//            BlazeBuilder
+//              .bindHttp(port, host)
+//              .mountService(service)
+//              .withServiceExecutor(pool)
+//              .run
+
     def pipelineBuilder(conn: SocketConnection) = {
       val s = new Http1ServerStage(service, Some(conn), pool) with WebSocketSupport
       LeafBuilder(s)
     }
+
+    val addr = new InetSocketAddress(host, port)
 
     new NIO1SocketServerChannelFactory(pipelineBuilder, 4, 16*1024)
       .bind(addr)
@@ -55,7 +62,7 @@ object ExampleApp {
   val port = envOrNone("OPENSHIFT_DIY_PORT") orElse envOrNone("HTTP_PORT") map(_.toInt) getOrElse(8080)
 
   def main(args: Array[String]): Unit = {
-    new ExampleApp(new InetSocketAddress(ip, port)).run()
+    new ExampleApp(ip, port).run()
   }
 }
 

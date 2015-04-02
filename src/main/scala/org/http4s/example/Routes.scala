@@ -39,7 +39,7 @@ class Routes {
 
       chatTopic.publishOne(s"New user '$name' joined chat")
       .flatMap {_ =>
-        val src = Process.emit(Text(s"Wecome to the chat, $name!")) ++ chatTopic.subscribe.map(Text(_))
+        val src = Process.emit(Text(s"Welcome to the chat, $name!")) ++ chatTopic.subscribe.map(Text(_))
         val snk = chatTopic.publish.map(_ compose frameToMsg)
           .onComplete(Process.await(chatTopic.publishOne(s"$name left the chat"))(_ => Process.halt))
 

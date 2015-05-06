@@ -1,5 +1,6 @@
 package org.http4s.example
 
+import org.http4s.EntityEncoder
 import org.http4s.json4s.jackson.jsonEncoder
 import org.http4s.rho._
 import org.http4s.rho.swagger._

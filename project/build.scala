@@ -9,7 +9,7 @@ object MyBuild extends Build {
   lazy val buildSettings = Defaults.defaultSettings ++ Revolver.settings ++
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.11.5",
+        scalaVersion := "2.11.6",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
@@ -30,8 +30,8 @@ object MyBuild extends Build {
 
   object Dependencies {
 
-    val http4sVersion = "0.6.0"
-    val rhoVersion = "0.3.0"
+    val http4sVersion = "0.7.0"
+    val rhoVersion = "0.5.0-SNAPSHOT"
 
     lazy val rhoSwagger     = "org.http4s"     %% "rho-swagger"           % rhoVersion
     lazy val http4sDSL      = "org.http4s"     %% "http4s-dsl"            % http4sVersion

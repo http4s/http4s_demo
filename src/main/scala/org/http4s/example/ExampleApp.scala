@@ -51,7 +51,7 @@ class ExampleApp(host: String, port: Int) {
 
     val addr = new InetSocketAddress(host, port)
 
-    new NIO1SocketServerChannelFactory(pipelineBuilder, 4, 16*1024)
+    NIO1SocketServerChannelFactory(pipelineBuilder, 4, 16*1024)
       .bind(addr)
       .run()
   }

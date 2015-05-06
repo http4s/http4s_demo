@@ -10,7 +10,7 @@ import org.http4s.server.websocket.WS
 
 import scala.concurrent.duration._
 
-import scalaz.stream.Process
+import scalaz.stream.{Exchange, Process, time}
 import scalaz.stream.async.topic
 
 class Routes {
@@ -26,9 +26,9 @@ class Routes {
 
     case r @ GET -> Root / "websocket" =>
       // Send a ping every second
-      val src = Process.awakeEvery(1.seconds).map(d => Text("Delay -> " + d))
+      val src = time.awakeEvery(1.seconds).map(d => Text("Delay -> " + d))
 
-      WS(src)
+      WS(Exchange(src, Process.halt))
 
     case r @ GET -> Root / "wschat" / name =>
 
@@ -43,7 +43,7 @@ class Routes {
         val snk = chatTopic.publish.map(_ compose frameToMsg)
           .onComplete(Process.await(chatTopic.publishOne(s"$name left the chat"))(_ => Process.halt))
 
-        WS(src, snk)
+        WS(Exchange(src, snk))
       }
 
     /* Routes for getting static resources. These might be served more efficiently by apache2 or nginx,

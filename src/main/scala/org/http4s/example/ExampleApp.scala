@@ -5,7 +5,7 @@ import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 
 import org.http4s.blaze.channel.SocketConnection
-import org.http4s.blaze.channel.nio1.{NIO1SocketServerChannelFactory}
+import org.http4s.blaze.channel.nio1.NIO1SocketServerGroup
 import org.http4s.blaze.pipeline.LeafBuilder
 import org.http4s.server.blaze.{WebSocketSupport, Http1ServerStage}
 import org.http4s.server.HttpService
@@ -51,9 +51,10 @@ class ExampleApp(host: String, port: Int) {
 
     val addr = new InetSocketAddress(host, port)
 
-    NIO1SocketServerChannelFactory(pipelineBuilder, 4, 16*1024)
-      .bind(addr)
-      .run()
+    NIO1SocketServerGroup.fixedGroup(4, 16*1024)
+      .bind(addr, pipelineBuilder)
+      .get    // yolo!
+      .join()
   }
 }
 

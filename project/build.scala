@@ -6,10 +6,10 @@ import com.typesafe.sbt.SbtNativePackager._
 object MyBuild extends Build {
   import Dependencies._
 
-  lazy val buildSettings = Defaults.defaultSettings ++ Revolver.settings ++
+  lazy val buildSettings = Revolver.settings ++
      packageArchetype.java_application ++
      Seq(
-        scalaVersion := "2.11.6",
+        scalaVersion := "2.11.7",
         resolvers += Resolver.sonatypeRepo("snapshots"),
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
@@ -30,7 +30,7 @@ object MyBuild extends Build {
 
   object Dependencies {
 
-    val http4sVersion = "0.8.2"
+    val http4sVersion = "0.8.4"
     val rhoVersion = "0.5.0"
 
     lazy val rhoSwagger     = "org.http4s"     %% "rho-swagger"           % rhoVersion
@@ -38,7 +38,7 @@ object MyBuild extends Build {
     lazy val http4sBlaze    = "org.http4s"     %% "http4s-blazeserver"    % http4sVersion
     lazy val http4s_jackson = "org.http4s"     %% "http4s-json4s-jackson" % http4sVersion
 
-    lazy val logbackClassic = "ch.qos.logback" % "logback-classic"        % "1.1.2"
+    lazy val logbackClassic = "ch.qos.logback" % "logback-classic"        % "1.1.3"
   }
   
 }

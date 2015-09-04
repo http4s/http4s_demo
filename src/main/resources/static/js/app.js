@@ -7,22 +7,22 @@ phonecatApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/home', {
-        templateUrl: 'staticviews/partials/home.html'
+        templateUrl: 'partials/home.html'
       }).
       when('/phones', {
-        templateUrl: 'staticviews/partials/phones.html',
+        templateUrl: 'partials/phones.html',
         controller: 'PhoneListCtrl'
       }).
       when('/xhr', {
-        templateUrl: 'staticviews/partials/xhr.html',
+        templateUrl: 'partials/xhr.html',
         controller: 'xhrController'
       }).
       when('/websocket', {
-        templateUrl: 'staticviews/partials/websocket.html',
+        templateUrl: 'partials/websocket.html',
         controller: 'websocketController'
       }).
       when('/wschat', {
-        templateUrl: 'staticviews/partials/chat.html',
+        templateUrl: 'partials/chat.html',
         controller: 'wsChatController'
       }).
       otherwise({

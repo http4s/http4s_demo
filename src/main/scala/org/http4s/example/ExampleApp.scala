@@ -1,14 +1,10 @@
 package org.http4s.example
 
 
-import java.net.InetSocketAddress
 import java.util.concurrent.Executors
 
-import org.http4s.blaze.channel.SocketConnection
-import org.http4s.blaze.channel.nio1.NIO1SocketServerGroup
-import org.http4s.blaze.pipeline.LeafBuilder
-import org.http4s.server.blaze.{WebSocketSupport, Http1ServerStage}
-import org.http4s.server.HttpService
+import org.http4s.server.blaze.BlazeBuilder
+import org.http4s.server.{ServerBuilder, HttpService, Service}
 
 import scala.util.Properties.envOrNone
 
@@ -25,45 +21,32 @@ class ExampleApp(host: String, port: Int) {
   def rhoRoutes = new RhoRoutes()
 
   // our routes can be combinations of any HttpService, regardless of where they come from
-  val routes = rhoRoutes.toService orElse new Routes().service
+  val routes = Service.withFallback(rhoRoutes.toService)(new Routes().service)
 
   // Add some logging to the service
-  val service: HttpService = routes.contramap { req =>
+  val service: HttpService = routes.local{ req =>
     val path = req.uri.path
     logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.method}: $path")
     req
   }
 
-  def run(): Unit = {
-    // Construct the blaze pipeline. We could use `import org.http4s.server.blaze.BlazeServer`
-    // which is much cleaner, except that we need to include websocket support.
-    // Typical server construction:
-//            BlazeBuilder
-//              .bindHttp(port, host)
-//              .mountService(service)
-//              .withServiceExecutor(pool)
-//              .run
-
-    def pipelineBuilder(conn: SocketConnection) = {
-      val s = new Http1ServerStage(service, Some(conn), pool) with WebSocketSupport
-      LeafBuilder(s)
-    }
-
-    val addr = new InetSocketAddress(host, port)
-
-    NIO1SocketServerGroup.fixedGroup(4, 16*1024)
-      .bind(addr, pipelineBuilder)
-      .get    // yolo!
-      .join()
-  }
+  // Construct the blaze pipeline.
+  def build(): ServerBuilder =
+            BlazeBuilder
+              .bindHttp(port, host)
+              .mountService(service)
+              .withServiceExecutor(pool)
 }
 
 object ExampleApp {
-  val ip =   envOrNone("OPENSHIFT_DIY_IP").getOrElse("0.0.0.0")
-  val port = envOrNone("OPENSHIFT_DIY_PORT") orElse envOrNone("HTTP_PORT") map(_.toInt) getOrElse(8080)
+  val ip =   "0.0.0.0"
+  val port = envOrNone("HTTP_PORT") map(_.toInt) getOrElse(8080)
 
   def main(args: Array[String]): Unit = {
-    new ExampleApp(ip, port).run()
+    new ExampleApp(ip, port)
+      .build()
+      .run
+      .awaitShutdown()
   }
 }
 

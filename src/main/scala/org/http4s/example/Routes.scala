@@ -56,7 +56,7 @@ class Routes {
     case r @ GET -> Root / path => cache.getResource("/staticviews", if(path.contains('.')) path else path + ".html", r)
 
     case r if r.pathInfo.endsWith("/") =>
-      service(r.withPathInfo(r.pathInfo + "index.html")).map(_.getOrElse(NotFound(r.pathInfo).run))
+      service(r.withPathInfo(r.pathInfo + "index.html"))
   }
 
 }

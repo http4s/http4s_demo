@@ -2,6 +2,7 @@ package org.http4s.example
 
 import org.http4s.json4s.jackson.jsonEncoder
 import org.http4s.rho._
+import org.http4s.twirl._
 import org.http4s.rho.swagger._
 import org.http4s.util.UrlCodingUtils.urlDecode
 
@@ -26,6 +27,10 @@ class RhoRoutes extends RhoService with SwaggerSupport {
                  else Data.getPhonesMatching(id)
       Ok(data)
     }
+
+  // Twirl routes require the twirl sbt plugin and import of the correct typeclass instances
+  "Twirl routes are valid responses" **
+    GET / "twirl-home" |>> Ok(html.home("http4s"))
 
   "Scalaz-stream makes it simple to compose routes, and cleanup resources" **
     GET / "cleanup" |>> {

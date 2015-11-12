@@ -7,7 +7,7 @@ phonecatApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/home', {
-        templateUrl: 'partials/home.html'
+        templateUrl: '/twirl-home'  // a twirl template
       }).
       when('/phones', {
         templateUrl: 'partials/phones.html',
@@ -24,8 +24,8 @@ phonecatApp.config(['$routeProvider',
       when('/wschat', {
         templateUrl: 'partials/chat.html',
         controller: 'wsChatController'
-      }).
-      otherwise({
+      })
+      .otherwise({
         redirectTo: '/home'
       });
   }]);

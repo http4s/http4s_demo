@@ -1,7 +1,10 @@
+
 import sbt._
 import Keys._
 import spray.revolver.RevolverPlugin._
 import com.typesafe.sbt.SbtNativePackager._
+
+import play.twirl.sbt.SbtTwirl
 
 object MyBuild extends Build {
   import Dependencies._
@@ -14,6 +17,7 @@ object MyBuild extends Build {
         resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
         libraryDependencies ++= Seq(
           http4sDSL,
+          http4sTwirl,
           http4sBlaze,
           rhoSwagger,
           http4s_jackson,
@@ -25,7 +29,7 @@ object MyBuild extends Build {
     id = "my-project",
     base = file("."),
     settings = buildSettings :+ (version := Dependencies.http4sVersion)
-  )
+  ).enablePlugins(SbtTwirl)
 
 
   object Dependencies {
@@ -35,6 +39,7 @@ object MyBuild extends Build {
 
     lazy val rhoSwagger     = "org.http4s"     %% "rho-swagger"           % rhoVersion
     lazy val http4sDSL      = "org.http4s"     %% "http4s-dsl"            % http4sVersion
+    lazy val http4sTwirl    = "org.http4s"     %% "http4s-twirl"          % http4sVersion
     lazy val http4sBlaze    = "org.http4s"     %% "http4s-blaze-server"   % http4sVersion
     lazy val http4s_jackson = "org.http4s"     %% "http4s-json4s-jackson" % http4sVersion
 

@@ -10,14 +10,14 @@ import scalaz.concurrent.Task
 import scalaz.stream.Process
 
 
-class RhoRoutes extends RhoService with SwaggerSupport {
+class RhoRoutes extends RhoService {
   // This is needed for the routes that return json4s `JValues`
 
   "Just a friendly hello route" **
     GET / "hello" |>> { () => Ok("Hello world!") }
 
   "An XHR example that just echos a result" **
-    GET / "things" / *  |>> { (rest: Seq[String]) =>
+    GET / "things" / *  |>> { (rest: List[String]) =>
       Ok(s"Calculating the rest: ${rest.map(urlDecode(_)).mkString("/")}")
     }
 

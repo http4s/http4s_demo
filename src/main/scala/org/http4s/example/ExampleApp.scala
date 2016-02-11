@@ -3,8 +3,10 @@ package org.http4s.example
 
 import java.util.concurrent.Executors
 
+import org.http4s.rho.swagger.SwaggerSupport
+import org.http4s.{ Service, HttpService }
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.server.{ServerBuilder, HttpService, Service}
+import org.http4s.server.ServerBuilder
 
 import scala.util.Properties.envOrNone
 
@@ -18,10 +20,10 @@ class ExampleApp(host: String, port: Int) {
   logger.info(s"Starting Http4s-blaze example on '$host:$port'")
 
   // build our routes
-  def rhoRoutes = new RhoRoutes()
+  def rhoRoutes = new RhoRoutes().toService(SwaggerSupport())
 
   // our routes can be combinations of any HttpService, regardless of where they come from
-  val routes = Service.withFallback(rhoRoutes.toService)(new Routes().service)
+  val routes = Service.withFallback(rhoRoutes)(new Routes().service)
 
   // Add some logging to the service
   val service: HttpService = routes.local{ req =>

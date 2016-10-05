@@ -4,9 +4,9 @@ version := "1.0-SNAPSHOT"
 
 scalaVersion := "2.11.7"
 
-val rhoVersion = "0.12.0"
+val rhoVersion = "0.12.0a"
 
-val http4sVersion = "0.14.7"
+val http4sVersion = "0.14.8a"
 
 lazy val http4sdemo = (project in file("."))
   .enablePlugins(SbtTwirl)

@@ -1,21 +1,19 @@
 package org.http4s.example
 
-
 import java.util.concurrent.Executors
 
 import org.http4s.rho.swagger.SwaggerSupport
-import org.http4s.{ Service, HttpService }
 import org.http4s.server.blaze.BlazeBuilder
-import org.http4s.server.ServerBuilder
-
-import scala.util.Properties.envOrNone
-
+import org.http4s.server.{Server, ServerApp, ServerBuilder}
+import org.http4s.{HttpService, Service}
 import org.log4s.getLogger
 
+import scala.util.Properties.envOrNone
+import scalaz.concurrent.Task
 
 class ExampleApp(host: String, port: Int) {
   private val logger = getLogger
-  private val pool = Executors.newCachedThreadPool()
+  private val pool   = Executors.newCachedThreadPool()
 
   logger.info(s"Starting Http4s-blaze example on '$host:$port'")
 
@@ -26,7 +24,7 @@ class ExampleApp(host: String, port: Int) {
   val routes = Service.withFallback(rhoRoutes)(new Routes().service)
 
   // Add some logging to the service
-  val service: HttpService = routes.local{ req =>
+  val service: HttpService = routes.local { req =>
     val path = req.uri.path
     logger.info(s"${req.remoteAddr.getOrElse("null")} -> ${req.method}: $path")
     req
@@ -34,21 +32,19 @@ class ExampleApp(host: String, port: Int) {
 
   // Construct the blaze pipeline.
   def build(): ServerBuilder =
-            BlazeBuilder
-              .bindHttp(port, host)
-              .mountService(service)
-              .withServiceExecutor(pool)
+    BlazeBuilder
+      .bindHttp(port, host)
+      .mountService(service)
+      .withServiceExecutor(pool)
 }
 
-object ExampleApp {
-  val ip =   "0.0.0.0"
-  val port = envOrNone("HTTP_PORT") map(_.toInt) getOrElse(8080)
+object ExampleApp extends ServerApp {
+  val ip   = "0.0.0.0"
+  val port = envOrNone("HTTP_PORT") map (_.toInt) getOrElse (8080)
 
-  def main(args: Array[String]): Unit = {
+  override def server(args: List[String]): Task[Server] =
     new ExampleApp(ip, port)
       .build()
-      .run
-      .awaitShutdown()
-  }
-}
+      .start
 
+}

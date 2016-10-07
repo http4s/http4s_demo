@@ -1,3 +1,5 @@
+enablePlugins(JavaAppPackaging)
+
 name := "http4s-demo"
 
 version := "1.0-SNAPSHOT"
